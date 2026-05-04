@@ -30,3 +30,9 @@ This is a small "zoo" of attention-mechanism implementations in PyTorch — curr
 - `tests/test_self_attention.py` covers shape preservation, softmax row-sum invariant, gradient flow through Q/K/V, and batch independence.
 
 When adding new variants (multi-head, causal/masked, cross-attention, etc.), add them as sibling modules under `attention/` and mirror the test layout under `tests/`.
+
+## Git workflow
+
+- Only commit or push when the user explicitly asks. Do not commit or push proactively at the end of a task.
+- Keep commit messages short — one or two sentences, focused on the why.
+- Do not mention Claude or include any Claude/AI co-authorship trailer in commit messages.
