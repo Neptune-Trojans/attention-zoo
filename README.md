@@ -15,11 +15,11 @@ from attention.self_attention import SelfAttention
 # Create model
 model = SelfAttention(input_dim=64)
 
-# Input shape: (batch_size, seq_length, input_dim)
-x = torch.randn(4, 10, 64)
+# Input shape: (batch_size, group, seq_length, input_dim)
+x = torch.randn(2, 3, 10, 64)
 
 # Forward pass
-output = model(x)  # Output shape: (4, 10, 64)
+output = model(x)  # Output shape: (2, 3, 10, 64)
 ```
 
 
