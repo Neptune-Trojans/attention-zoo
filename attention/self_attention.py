@@ -7,9 +7,9 @@ class SelfAttention(nn.Module):
     def __init__(self, input_dim):
         super(SelfAttention, self).__init__()
         self.input_dim = input_dim
-        self.query = nn.Linear(input_dim, input_dim)
-        self.key = nn.Linear(input_dim, input_dim)
-        self.value = nn.Linear(input_dim, input_dim)
+        self.query = nn.Linear(input_dim, input_dim, bias=False)
+        self.key   = nn.Linear(input_dim, input_dim, bias=False)
+        self.value = nn.Linear(input_dim, input_dim, bias=False)
 
 
     def forward(self, x):
