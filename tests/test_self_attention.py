@@ -67,3 +67,47 @@ def test_batch_independence():
 
     assert torch.allclose(out_batched[0:1], out1, atol=1e-6)
     assert torch.allclose(out_batched[1:2], out2, atol=1e-6)
+
+
+def test_output_shape_matches_input_4d():
+    torch.manual_seed(42)
+    outer, inner, seq_length, input_dim = 2, 3, 5, 16
+    x = torch.randn(outer, inner, seq_length, input_dim)
+
+    model = SelfAttention(input_dim)
+    model.eval()
+
+    with torch.no_grad():
+        output = model(x)
+
+    assert output.shape == x.shape
+
+
+def test_4d_matches_looped_3d():
+    torch.manual_seed(0)
+    outer, inner, seq_length, input_dim = 2, 3, 5, 16
+    x = torch.randn(outer, inner, seq_length, input_dim)
+
+    model = SelfAttention(input_dim)
+    model.eval()
+
+    with torch.no_grad():
+        out_4d = model(x)
+        out_looped = torch.stack([model(x[i]) for i in range(outer)], dim=0)
+
+    assert torch.allclose(out_4d, out_looped, atol=1e-6)
+
+
+def test_attention_weights_sum_to_one_4d():
+    torch.manual_seed(0)
+    input_dim = 16
+    x = torch.randn(2, 3, 5, input_dim)
+
+    model = SelfAttention(input_dim)
+    queries = model.query(x)
+    keys = model.key(x)
+    scores = torch.matmul(queries, keys.transpose(-2, -1)) / (input_dim ** 0.5)
+    weights = F.softmax(scores, dim=-1)
+
+    row_sums = weights.sum(dim=-1)
+    assert torch.allclose(row_sums, torch.ones_like(row_sums), atol=1e-6)
