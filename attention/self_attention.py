@@ -16,7 +16,7 @@ class SelfAttention(nn.Module):
         queries = self.query(x)
         keys = self.key(x)
         values = self.value(x)
-        scores = torch.matmul(queries, keys.transpose(-2, -1)) / (self.input_dim ** 0.5)
+        scores = torch.matmul(queries, keys.transpose(-2, -1)) / (keys.size(-1) ** 0.5)
         attention = F.softmax(scores, dim=-1)
         weighted = torch.matmul(attention, values)
         return weighted
