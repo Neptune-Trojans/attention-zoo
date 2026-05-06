@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from attention.outputs import AttentionOutput
+
 
 class SelfAttention(nn.Module):
     def __init__(self, input_dim):
@@ -19,4 +21,4 @@ class SelfAttention(nn.Module):
         scores = torch.matmul(queries, keys.transpose(-2, -1)) / (keys.size(-1) ** 0.5)
         attention = F.softmax(scores, dim=-1)
         weighted = torch.matmul(attention, values)
-        return weighted
+        return AttentionOutput(output=weighted, attention_weights=attention)

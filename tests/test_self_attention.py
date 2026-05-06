@@ -13,9 +13,9 @@ def test_output_shape_matches_input():
     model.eval()
 
     with torch.no_grad():
-        output = model(x)
+        result = model(x)
 
-    assert output.shape == x.shape
+    assert result.output.shape == x.shape
 
 
 def test_attention_weights_sum_to_one():
@@ -39,8 +39,8 @@ def test_gradients_flow_to_all_projections():
     x = torch.randn(1, 4, input_dim, requires_grad=True)
 
     model = SelfAttention(input_dim)
-    output = model(x)
-    output.sum().backward()
+    result = model(x)
+    result.output.sum().backward()
 
     assert model.query.weight.grad is not None
     assert model.key.weight.grad is not None
@@ -61,9 +61,9 @@ def test_batch_independence():
     batched = torch.cat([x1, x2], dim=0)
 
     with torch.no_grad():
-        out1 = model(x1)
-        out2 = model(x2)
-        out_batched = model(batched)
+        out1 = model(x1).output
+        out2 = model(x2).output
+        out_batched = model(batched).output
 
     assert torch.allclose(out_batched[0:1], out1, atol=1e-6)
     assert torch.allclose(out_batched[1:2], out2, atol=1e-6)
@@ -78,9 +78,9 @@ def test_output_shape_matches_input_4d():
     model.eval()
 
     with torch.no_grad():
-        output = model(x)
+        result = model(x)
 
-    assert output.shape == x.shape
+    assert result.output.shape == x.shape
 
 
 def test_4d_matches_looped_3d():
@@ -92,8 +92,8 @@ def test_4d_matches_looped_3d():
     model.eval()
 
     with torch.no_grad():
-        out_4d = model(x)
-        out_looped = torch.stack([model(x[i]) for i in range(outer)], dim=0)
+        out_4d = model(x).output
+        out_looped = torch.stack([model(x[i]).output for i in range(outer)], dim=0)
 
     assert torch.allclose(out_4d, out_looped, atol=1e-6)
 
